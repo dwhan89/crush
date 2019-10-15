@@ -27,8 +27,8 @@ setup(
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
     ],
-    description="dory",
-    package_dir={"dory": "dory"},
+    description="crush",
+    package_dir={"crush": "crush"},
     install_requires=["astropy >= 3.2",
                     "numpy >= 1.10",
                     "matplotlib >= 2.0",
@@ -39,10 +39,10 @@ setup(
                     "mpi4py",
                     "pandas"],
     license="BSD license",
-    keywords='dory',
-    name='dory',
-    packages=['dory'],
-    url='https://github.com/dwhan89/dory',
+    keywords='crush',
+    name='crush',
+    packages=['crush'],
+    url='https://github.com/dwhan89/crush',
 )
 
 print('\n[setup.py request was successful.]')
