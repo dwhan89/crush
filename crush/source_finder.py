@@ -19,7 +19,6 @@ class SourceFinder(object):
     define the top level api for any SourceFinder class and subclass. any specific implementation of sourcefinder
     classes should inherit from this class.
     """
-
     def __init__(self):
         pass
 

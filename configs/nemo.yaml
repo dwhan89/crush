@@ -1,5 +1,9 @@
-# configurations to run nemo real-space matched filters
-# here we assume that soapack is already installed and configured
-beam_version:
-calibration_version:
-map_version:
+# Configuration to run nemo real-space matched filters on ACT data
+# We assume that soapack is already installed and configured
+
+# global settings
+beam_version: 190809
+calibration_version: 190904
+map_version: mr3f_20190502
+
+# patch specific settings
