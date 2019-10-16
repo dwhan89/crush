@@ -26,10 +26,12 @@ class SourceFinder(object):
 
 
 class Nemo(SourceFinder):
-    """
+    """:
     this class handles top interactions with nemo library (https://github.com/simonsobs/nemo)
     """
 
     def __init__(self):
         super().__init__()
         pass
+
+

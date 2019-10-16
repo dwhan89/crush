@@ -18,8 +18,8 @@ setup(
     author="Dongwon 'DW' Han",
     author_email='dwhan89@gmail.com',
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
-        'Intended Audience :: Developers',
+        'Development Status :: Pre-Alpha',
+        'Intended Audience :: Mostly Me',
         'License :: OSI Approved :: BSD License',
         'Natural Language :: English',
         'Programming Language :: Python :: 3',
@@ -37,11 +37,14 @@ setup(
                     "scipy",
                     "PyYAML",
                     "mpi4py",
-                    "pandas"],
+                    "pandas",
+                    "soapack"],
     license="BSD license",
     keywords='crush',
     name='crush',
     packages=['crush'],
+    include_package_data=True,
+    package_data={'crush': ['data/*', 'data/misc/*']},
     url='https://github.com/dwhan89/crush',
 )
 
