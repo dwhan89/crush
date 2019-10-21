@@ -1,0 +1,14 @@
+#!/bin/bash
+#SBATCH --nodes=$nodes
+#SBATCH --ntasks=$ntasks
+#SBATCH --time=$times
+#SBATCH --cpus-per-task=$cpuspertask
+#SBATCH --job-name $jobname
+#SBATCH --output=logs/$jobname
+#SBATCH -p cca
+#SBATCH --constraint=skylake
+
+cd $SLURM_SUBMIT_DIR
+#conda activate idp
+
+mpirun nemo $nemo_yml -M
