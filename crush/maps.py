@@ -27,7 +27,7 @@ def get_bounded_pix(imap, threadhold=None, threshold_factor=1., sigma=None, down
     del template
 
     # get pix for the bounded region
-    _, pix = misc.max_size(binary_map, value=1., varbose=verbose)
+    _, pix = misc.max_size(binary_map, value=1., verbose=verbose)
     # if the input map was downsampled, we need to map pixels at low resolutions to those at higher resolution
     if not downsample:
         ll_pix = imap.sky2pix(binary_map.pix2sky([pix[0], pix[2]]))
