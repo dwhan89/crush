@@ -11,4 +11,4 @@
 cd $SLURM_SUBMIT_DIR
 #conda activate idp
 
-mpirun nemo $nemo_yml -M
+mpirun nemo $nemo_yml $nemo_flags
