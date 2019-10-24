@@ -83,7 +83,8 @@ def bounded_pixs(imap, grid_pix=None, valid_grid=None, threshold=None, threshold
                  downsample=None, verbose=False):
     if grid_pix is None:
         grid_pix = np.zeros((1, 1, 4))
-        grid_pix[0, 0][:] = np.array([0, imap.shape[1] - 1, 0, imap.shape[1] - 1]).astype(np.int)
+        grid_pix[0, 0][:] = np.array([0, imap.shape[0] - 1, 0, imap.shape[1] - 1])
+    grid_pix = grid_pix.astype(np.int)
 
     nxgrid, nygrid = grid_pix.shape[:2]
     if valid_grid is None:
@@ -97,7 +98,7 @@ def bounded_pixs(imap, grid_pix=None, valid_grid=None, threshold=None, threshold
                 continue
             else:
                 ys, ye, xs, xe = grid_pix[j, i]
-                subsect_pix = bounded_pix(imap[ys:ye + 1, xs:xe + 1], threshhold, threshhold_factor, sigma, downsample,
+                subsect_pix = bounded_pix(imap[ys:ye + 1, xs:xe + 1], threshold, threshold_factor, sigma, downsample,
                                           verbose)
                 ret[j, i, :] = subsect_pix
                 ret[j, i, :2] += ys
