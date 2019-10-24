@@ -79,7 +79,7 @@ def bounded_pix(imap, threadhold=None, threshold_factor=1., sigma=None, downsamp
     return pix
 
 
-def bounded_pixs(imap, grid_pix=None, valid_grid=None, threshhold=None, threshhold_factor=1., sigma=None,
+def bounded_pixs(imap, grid_pix=None, valid_grid=None, threshold=None, threshold_factor=1., sigma=None,
                  downsample=None, verbose=False):
     if grid_pix is None:
         grid_pix = np.zeros((1, 1, 4))
