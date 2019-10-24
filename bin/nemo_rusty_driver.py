@@ -3,7 +3,7 @@ from soapack import interfaces as soint
 from pixell import enmap
 import os
 
-strict = False
+strict = True
 
 nemo_config_file = config.package_data_path('configs/nemo.yaml')
 nemo_config = config.read_yaml(nemo_config_file)
