@@ -49,13 +49,17 @@ for patch in patches:
         shape, wcs = ivar.shape, ivar.wcs
         default_extent = np.array(nemo_config['nemo']['default_tile_extent'])*utils.degree
         ngrids = maps.nrect_grid(ivar, default_extent)
+        nxgrid, nygrid = ngrids
 
         # some simplification
-        if ngrids[0]*ngrids[1] <= 8: ngrids = [1,1]
+        if nxgrid*nygrid <= 8:
+            ngrids = [1,1]
+            nxgrid = nygrid = 1
         print([season, patch, array, freq], 'ntiles:', ngrids)
-        grid_edges = maps.rect_grid_edges(shape, ngrids)
+        grid_pix = maps.rect_grid_edges(shape, ngrids)
+        valid_grid = maps.threshold_grids(ivar, grid_pix)
 
-
+        noise_grid_pix = np.zeros(grid_pix.shape).astype(np.int)
 
 print(patches)
 print(nemo_config)
