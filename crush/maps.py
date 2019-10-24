@@ -30,7 +30,6 @@ def rect_grid_edges(shape, ngrids):
             yeidx = min(yeidx, shape[-2] + 1)
 
             ret[j, i, :] = np.array([ysidx, yeidx, xsidx, xeidx])
-i
     return ret.astype(np.int)
 
 
