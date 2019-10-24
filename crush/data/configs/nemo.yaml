@@ -6,4 +6,13 @@ beam_version: 190809
 calibration_version: 190904
 map_version: mr3f_20190502
 
+# run settings:
+# you can either list specific patches to run as list (e.x [s15_deep56_pa2_f150,..]) or write data release tag (e.x. mr3).
+# If data release tag is specified, the code will run all patches included in that data release
+patches: 'mr3'
+#choose among 'auto', 'custom', or "auto&custom". For 'custom' tiling, you need to list them below in patch specific settings
+tile: 'auto'  #choose either 'auto' or 'custom', or "auto&custom".
+
 # patch specific settings
+
+
