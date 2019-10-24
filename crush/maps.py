@@ -62,5 +62,3 @@ def bounded_pix(imap, threadhold=None, threshold_factor=1., sigma=None, downsamp
         pix = np.array([ll_pix[0], ur_pix[0], ll_pix[1], ur_pix[1]]).astype(int)
 
     return pix
-
-
