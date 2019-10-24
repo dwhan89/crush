@@ -5,8 +5,10 @@ from itertools import product
 from crush import misc
 import scipy.ndimage
 
+
 def nrect_grid(imap, grid_extent):
     return np.ceil(imap.extent()/grid_extent).astype(np.int)
+
 
 def rect_grid_edges(shape, ngrids):
     ny, my = divmod(shape[-2], ngrids[0])
@@ -30,6 +32,19 @@ def rect_grid_edges(shape, ngrids):
             ret[j, i, :] = np.array([ysidx, yeidx, xsidx, xeidx]) 
 
     return ret.astype(np.int)
+
+
+def threshold_grids(imap, grid_edges, eps=0.):
+    ny, nx = grid_edges.shape[0], grid_edges.shape[1]
+    ret = np.ones((ny, nx), dtype=bool)
+    for j in range(ny):
+        for i in range(nx):
+            ys, ye, xs, xe = grid_edges[j, i]
+            loc = np.where(imap[ys:ye + 1, xs:xe + 1] > eps)
+            if len(loc[0]) == 0:
+                ret[j, i] = False
+    return ret
+
 
 def bounded_pix(imap, threadhold=None, threshold_factor=1., sigma=None, downsample=None, verbose=False):
     shape, wcs = imap.shape, imap.wcs
