@@ -43,5 +43,9 @@ for patch in patches:
     # start automatic tile generation
     if 'auto' in tile_setting:
         ivar = enmap.read_fits(weight_file)
+
+
+
+
 print(patches)
 print(nemo_config)
