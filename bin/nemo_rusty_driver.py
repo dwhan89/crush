@@ -58,8 +58,14 @@ for patch in patches:
         print([season, patch, array, freq], 'ntiles:', ngrids)
         grid_pix = maps.rect_grid_edges(shape, ngrids)
         valid_grid = maps.threshold_grids(ivar, grid_pix)
-
         noise_grid_pix = np.zeros(grid_pix.shape).astype(np.int)
+
+        grid_coords = maps.gridpix2sky(shape, wcs, grid_pix)/utils.degree
+        #grid_coords = maps.reguarlize_rect_grid(grid_coords)
+        noise_grid_coords = maps.gridpix2sky(shape, wcs, noise_grid_pix)
+        noise_grid_coords = maps.reguarlize_rect_grid(noise_grid_coords/utils.degree)
+
+
 
 print(patches)
 print(nemo_config)
