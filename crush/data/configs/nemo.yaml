@@ -16,13 +16,14 @@ act_mr3:
 nemo:
   {'patches': 'act_mr3',
    'tiles': 'auto',
-   'snr': 2.
+   'snr': 2.,
    'default_tile_extent': [10.,20.]  # in degree
   }
 
 # patch specific settings
 patches:
-  {}
+  {
+  }
 
 
 

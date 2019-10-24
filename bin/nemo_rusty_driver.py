@@ -1,6 +1,7 @@
 from crush import config, maps
 from soapack import interfaces as soint
 from pixell import enmap, utils
+import numpy as np
 import os
 
 strict = True
@@ -11,6 +12,7 @@ nemo_config = config.read_yaml(nemo_config_file)
 # load data model
 DM = soint.models['act_mr3']()
 
+print(nemo_config)
 patches = nemo_config['nemo']['patches']
 if type(patches) != list:
     assert (patches in soint.models.keys())  # make sure data model is available
@@ -45,12 +47,14 @@ for patch in patches:
         ivar = enmap.read_fits(weight_file)
 
         shape, wcs = ivar.shape, ivar.wcs
-        default_extent = nemo_config['nemo']['default_tile_extent']*utils.degree
+        default_extent = np.array(nemo_config['nemo']['default_tile_extent'])*utils.degree
         ngrids = maps.nrect_grid(ivar, default_extent)
 
         # some simplification
-        ngrids = [n if n != 3 else 1 for n in ngrids]
-        print(ngrids)
+        if ngrids[0]*ngrids[1] <= 8: ngrids = [1,1]
+        print([season, patch, array, freq], 'ntiles:', ngrids)
+        grid_edges = maps.rect_grid_edges(shape, ngrids)
+
 
 
 print(patches)
