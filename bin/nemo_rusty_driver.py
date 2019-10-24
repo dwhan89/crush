@@ -1,6 +1,6 @@
-from crush import config
+from crush import config, maps
 from soapack import interfaces as soint
-from pixell import enmap
+from pixell import enmap, utils
 import os
 
 strict = True
@@ -44,7 +44,13 @@ for patch in patches:
     if 'auto' in tile_setting:
         ivar = enmap.read_fits(weight_file)
 
+        shape, wcs = ivar.shape, ivar.wcs
+        default_extent = nemo_config['nemo']['default_tile_extent']*utils.degree
+        ngrids = maps.nrect_grid(ivar, default_extent)
 
+        # some simplification
+        ngrids = [n if n != 3 else 1 for n in ngrids]
+        print(ngrids)
 
 
 print(patches)
