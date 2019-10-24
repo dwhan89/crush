@@ -110,11 +110,19 @@ def gridpix2sky(shape, wcs, grid_pixs):
     for j in range(grid_pixs.shape[0]):
         for i in range(grid_pixs.shape[1]):
             pix = grid_pixs[j,i]
-            ll_coords = enmap.pix2sky([pix[0], pix[2]])
-            ur_coords = enmap.pix2sky([pix[1], pix[3]])
+            ll_coords = enmap.pix2sky(shape, wcs, [pix[0], pix[2]])
+            ur_coords = enmap.pix2sky(shape, wcs, [pix[1], pix[3]])
             ret[j,i,:] = np.array([ll_coords[0], ur_coords[0], ll_coords[1], ur_coords[1]])
     return ret
 
+def reguarlize_rect_grid(grid, ndecimal=0):
+    if grid.dtype == np.int:
+        pass
+    else:
+        return np.round(grid, ndecimal)
+
+
+            
 
 
 
