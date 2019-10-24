@@ -29,7 +29,11 @@ for patch in patches:
     if strict:
         file_lists = [beam_file, map_file, weight_file]
         for file_path in file_lists:
-            assert(os.path.exists(file_path))
+            try:
+                assert(os.path.exists(file_path))
+            except:
+                print("Missing File: %s" % file_path)
+                exit(1)
 
 print(patches)
 print(nemo_config)
