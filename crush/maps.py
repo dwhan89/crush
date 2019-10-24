@@ -30,7 +30,7 @@ def rect_grid_edges(shape, ngrids):
             yeidx = min(yeidx, shape[-2] + 1)
 
             ret[j, i, :] = np.array([ysidx, yeidx, xsidx, xeidx])
-
+i
     return ret.astype(np.int)
 
 
@@ -104,3 +104,20 @@ def bounded_pixs(imap, grid_pix=None, valid_grid=None, threshold=None, threshold
                 ret[j, i, :2] += ys
                 ret[j, i, 2:] += xs
     return ret
+
+
+def gridpix2sky(shape, wcs, grid_pixs):
+    ret = np.zeros(grid_pixs.shape)
+    for j in range(grid_pixs.shape[0]):
+        for i in range(grid_pixs.shape[1]):
+            pix = grid_pixs[j,i]
+            ll_coords = enmap.pix2sky([pix[0], pix[2]])
+            ur_coords = enmap.pix2sky([pix[1], pix[3]])
+            ret[j,i,:] = np.array([ll_coords[0], ur_coords[0], ll_coords[1], ur_coords[1]])
+    return ret
+
+
+
+
+
+
