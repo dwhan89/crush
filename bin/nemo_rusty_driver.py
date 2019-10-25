@@ -41,10 +41,6 @@ for patch in patches:
                 print("Missing File: %s" % file_path)
                 exit(1)
 
-    template[0]['mapFileName'] = map_file
-    template[0]['weightsFileName'] = weight_file
-    template[0]['beamFileName'] = beam_file
-    template[0]['obsFreqGHz'] = 95.0 if freq == 'f090' else 148.0
 
     # build tile if needed
     tile_setting = nemo_config['nemo']['tiles'].split('&')
@@ -88,6 +84,11 @@ for patch in patches:
         pass
 
     mpi_switch = (ngrids[0]*ngrids[1] == 1)
+
+    template['unfilteredMaps'][0]['mapFileName'] = map_file
+    template['unfilteredMaps'][0]['weightsFileName'] = weight_file
+    template['unfilteredMaps'][0]['beamFileName'] = beam_file
+    template['unfilteredMaps'][0]['obsFreqGHz'] = 95.0 if freq == 'f090' else 148.0
     template['useMPI'] = mpi_switch
     template['thresholdSigma'] = nemo_config['nemo']['snr']
     template['objIdent'] = 'mr3c_{}-'.format(patch)
