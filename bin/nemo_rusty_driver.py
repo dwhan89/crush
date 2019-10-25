@@ -4,6 +4,8 @@ from pixell import enmap, utils
 import numpy as np
 import os
 import yaml
+from string import Template
+from subprocess import Popen, PIPE
 
 strict = True
 
@@ -14,7 +16,6 @@ nemo_config = config.read_yaml(nemo_config_file)
 # load data model
 DM = soint.models['act_mr3']()
 
-print(nemo_config)
 patches = nemo_config['nemo']['patches']
 if type(patches) != list:
     assert (patches in soint.models.keys())  # make sure data model is available
@@ -107,4 +108,32 @@ for psa in patches:
         template['mapFilters'][0]['params']['noiseParams']['RADecSection'] = 'tileNoiseRegions'
 
     yaml.dump(template, open('{}.yml'.format(psa), 'w'))
+
+    slurm_template_file = open(config.package_data_path('configs/rusty_slurm.txt'), 'r')
+    slurm_template = Template(slurm_template_file.read())
+    slurm_template_file.close()
+    ngrid = int(ngrids[0]*ngrids[1])
+
+    # improve this part
+    nodes = min(ngrid, 8)
+    ntasks = nodes
+    slurm_settings = {}
+    slurm_settings['nodes'] = nodes
+    slurm_settings['ntasks'] = ntasks
+    slurm_settings['times']  = '05:00:00'
+    slurm_settings['cpuspertask'] = 20
+    slurm_settings['jobname'] = psa
+    slurm_settings['nemo_yml'] = '{}.yml'.format(psa)
+    slurm_settings['nemo_flags'] = '-M' if mpi_switch else ''
+
+    script_content = slurm_template.safe_substitute(slurm_settings)
+
+    script = open('batch.txt', 'w')
+    script.write(script_content)
+    script.close()
+
+    command = ['sbatch', 'batch.txt']
+    process = Popen(command, stdout=PIPE)
+    (output, err) = process.communicate()
+    exit_code = process.wait()
 
