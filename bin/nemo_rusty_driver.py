@@ -3,6 +3,7 @@ from soapack import interfaces as soint
 from pixell import enmap, utils
 import numpy as np
 import os
+import yaml
 
 strict = True
 
@@ -49,21 +50,42 @@ for patch in patches:
         shape, wcs = ivar.shape, ivar.wcs
         default_extent = np.array(nemo_config['nemo']['default_tile_extent'])*utils.degree
         ngrids = maps.nrect_grid(ivar, default_extent)
-        nxgrid, nygrid = ngrids
+        nygrid, nxgrid = ngrids
 
         # some simplification
         if nxgrid*nygrid <= 8:
             ngrids = [1,1]
             nxgrid = nygrid = 1
-        print([season, patch, array, freq], 'ntiles:', ngrids)
+        #print([season, patch, array, freq], 'ntiles:', ngrids)
         grid_pix = maps.rect_grid_edges(shape, ngrids)
         valid_grid = maps.threshold_grids(ivar, grid_pix)
-        noise_grid_pix = np.zeros(grid_pix.shape).astype(np.int)
 
+        # put this in the setting!
+        threshold_factor = 1.3 if patch not in ['cmb', 'boss'] else 0.8
+
+        noise_grid_pix =  maps.bounded_pixs(ivar, grid_pix, valid_grid, threshold_factor=threshold_factor , sigma=2, downsample=10)
+        #noise_grid_pix = np.zeros(grid_pix.shape).astype(np.int)
+
+        #print(valid_grid)
+        #print(noise_grid_pix)
         grid_coords = maps.gridpix2sky(shape, wcs, grid_pix)/utils.degree
         #grid_coords = maps.reguarlize_rect_grid(grid_coords)
         noise_grid_coords = maps.gridpix2sky(shape, wcs, noise_grid_pix)
         noise_grid_coords = maps.reguarlize_rect_grid(noise_grid_coords/utils.degree)
+        tile_grid_dict = {}
+        noise_grid_dict = {'test':{}}
+        #print(ngrids)
+        for j in np.arange(nygrid):
+            for i in np.arange(nxgrid):
+                #print(j, i, valid_grid.shape)
+                if not valid_grid[j,i]: continue
+                tile_grid_dict["{}_{}".format(j,i)] = grid_coords[j,i].tolist()
+                noise_grid_dict['test']["{}_{}".format(j,i)] = noise_grid_coords[j,i].tolist()
+        tiles_def = yaml.dump(tile_grid_dict, default_flow_style=True)
+        noise_tiles_def = yaml.dump(noise_grid_dict, default_flow_style=True)
+        #if nxgrid*nygrid != 1:
+        #    print(tiles_def)
+        print(noise_tiles_def)
 
 
 

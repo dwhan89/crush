@@ -6,37 +6,37 @@
 # NOTE: surveyMask is optional
 
 unfilteredMaps:
-    - {mapFileName: $mapfile,
-       weightsFileName: $weightfile,
-       obsFreqGHz: $freq , 'units': 'uK',
-       beamFileName: $beamfile,
+    - {mapFileName: 'mapfile',
+       weightsFileName: 'weightfile',
+       obsFreqGHz: 'freq' , 'units': 'uK',
+       beamFileName: 'beamfile',
        addNoise: null,
        RADecSection: null,
        pointSourceMask: null,
        surveyMask: null}
 
 # MPI? Used only for tileDeck files (see examples/AdvACT)
-useMPI: $mpiswitch
+useMPI: 'mpiswitch'
 
 # Detection/catalog options
 # Set useInterpolator: True for sub-pixel flux and SNR measurements
-thresholdSigma: $snr
+thresholdSigma: 'snr'
 minObjPix: 1
 rejectBorder: 10
 useInterpolator: True
 findCenterOfMass: True
-objIdent: $fileprefix
+objIdent: 'fileprefix'
 longNames: False
-catalogCuts: ['SNR > $snr']
+catalogCuts: ['snr']
 measureShapes: True
 
 # tileDeck options - cut-up each map into smaller sections, store in a multi-extension .fits file
-makeTileDeck: $tileswitch
+makeTileDeck: 'tileswitch'
 tileOverlapDeg: 1.
 
 # User-defined tiles
 # These will automatically be expanded by tileOverlapDeg, i.e., don't need to handle overlaps here
-$tiles
+tileDefinitions: null
 
 # Corresponding regions in tiles to use for noise part of matched filter
 # IF these are modified, tileDeck files will need to be re-made (delete them and rerun nemo)
@@ -50,7 +50,7 @@ mapFilters:
        class: "BeamRealSpaceMatchedFilter",
        params: {noiseParams: {method: "max(dataMap,CMB)",
                               matchedFilterClass: 'BeamMatchedFilter',
-                              RADecSection: $noise_tiles_setting,
+                              RADecSection: 'noise_tiles_setting',
                               kernelMaxArcmin: 7.,
                               symmetrize: False,
                               noiseGridArcmin: 20.},
