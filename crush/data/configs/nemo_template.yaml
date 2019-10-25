@@ -42,7 +42,8 @@ tileDefinitions: null
 # IF these are modified, tileDeck files will need to be re-made (delete them and rerun nemo)
 # Format for each entry: tileName: [RAMin, RAMax, decMin, decMax]
 # If no entry is given, the area of the tile minus autoBorderDeg will be used
-$noise_tiles
+
+tileNoiseRegions: null
 
 # Filter definitions
 mapFilters:

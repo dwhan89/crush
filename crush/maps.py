@@ -10,7 +10,7 @@ def nrect_grid(imap, grid_extent):
     return np.ceil(imap.extent() / grid_extent).astype(np.int)
 
 
-def rect_grid_edges(shape, ngrids):
+def rect_grid_pix(shape, ngrids):
     ny, my = divmod(shape[-2], ngrids[0])
     nx, mx = divmod(shape[-1], ngrids[1])
 

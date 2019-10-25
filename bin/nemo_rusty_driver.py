@@ -8,6 +8,7 @@ import yaml
 strict = True
 
 nemo_config_file = config.package_data_path('configs/nemo.yaml')
+template =  config.package_data_path('configs/nemo_template.yaml')
 nemo_config = config.read_yaml(nemo_config_file)
 
 # load data model
@@ -40,13 +41,20 @@ for patch in patches:
                 print("Missing File: %s" % file_path)
                 exit(1)
 
+    template[0]['mapFileName'] = map_file
+    template[0]['weightsFileName'] = weight_file
+    template[0]['beamFileName'] = beam_file
+    template[0]['obsFreqGHz'] = 95.0 if freq == 'f090' else 148.0
+
     # build tile if needed
     tile_setting = nemo_config['nemo']['tiles'].split('&')
 
+    ngrids = [1,1]
     # start automatic tile generation
+    noise_tiles = {'autoBorderDeg': 0.5}
+    tiles = []
     if 'auto' in tile_setting:
         ivar = enmap.read_fits(weight_file)
-
         shape, wcs = ivar.shape, ivar.wcs
         default_extent = np.array(nemo_config['nemo']['default_tile_extent'])*utils.degree
         ngrids = maps.nrect_grid(ivar, default_extent)
@@ -56,38 +64,44 @@ for patch in patches:
         if nxgrid*nygrid <= 8:
             ngrids = [1,1]
             nxgrid = nygrid = 1
-        #print([season, patch, array, freq], 'ntiles:', ngrids)
-        grid_pix = maps.rect_grid_edges(shape, ngrids)
+
+        grid_pix = maps.rect_grid_pix(shape, ngrids)
         valid_grid = maps.threshold_grids(ivar, grid_pix)
 
         # put this in the setting!
         threshold_factor = 1.3 if patch not in ['cmb', 'boss'] else 0.8
 
         noise_grid_pix =  maps.bounded_pixs(ivar, grid_pix, valid_grid, threshold_factor=threshold_factor , sigma=2, downsample=10)
-        #noise_grid_pix = np.zeros(grid_pix.shape).astype(np.int)
 
-        #print(valid_grid)
-        #print(noise_grid_pix)
         grid_coords = maps.gridpix2sky(shape, wcs, grid_pix)/utils.degree
-        #grid_coords = maps.reguarlize_rect_grid(grid_coords)
         noise_grid_coords = maps.gridpix2sky(shape, wcs, noise_grid_pix)
         noise_grid_coords = maps.reguarlize_rect_grid(noise_grid_coords/utils.degree)
-        tile_grid_dict = {}
-        noise_grid_dict = {'test':{}}
-        #print(ngrids)
         for j in np.arange(nygrid):
             for i in np.arange(nxgrid):
-                #print(j, i, valid_grid.shape)
                 if not valid_grid[j,i]: continue
-                tile_grid_dict["{}_{}".format(j,i)] = grid_coords[j,i].tolist()
-                noise_grid_dict['test']["{}_{}".format(j,i)] = noise_grid_coords[j,i].tolist()
-        tiles_def = yaml.dump(tile_grid_dict, default_flow_style=True)
-        noise_tiles_def = yaml.dump(noise_grid_dict, default_flow_style=True)
-        #if nxgrid*nygrid != 1:
-        #    print(tiles_def)
-        print(noise_tiles_def)
+                decs, dece, ras, rae = grid_coords[j,i].tolist()
+                tiles.append({'tileName':"{}_{}".format(j,i), 'RADecSection': [ras, rae, decs, dece]})
+                decs, dece, ras, rae = noise_grid_coords[j,i].tolist()
+                noise_tiles["{}_{}".format(j,i)] = [ras, rae, decs, dece]
+    if 'custom' in tile_setting:
+        # do something here
+        pass
 
+    mpi_switch = (ngrids[0]*ngrids[1] == 1)
+    template['useMPI'] = mpi_switch
+    template['thresholdSigma'] = nemo_config['nemo']['snr']
+    template['objIdent'] = 'mr3c_{}-'.format(patch)
+    template['catalogCuts'] = ['SNR > %0.1f'%nemo_config['nemo']['snr']]
+    template['makeTileDeck']  = mpi_switch
 
+    if not mpi_switch:
+        del template['tileDefinitions']
+        del template['tileNoiseRegions']
+        template['tileNoiseRegions'][0]['params']['noiseParams']['RADecSection'] = noise_tiles['0_0']
+    else:
+        template['tileDefinitions'] = tiles
+        template['tileNoiseRegions'] = noise_tiles
+        template['tileNoiseRegions'][0]['params']['noiseParams']['RADecSection'] = 'tileNoiseRegions'
 
-print(patches)
-print(nemo_config)
+    yaml.dump(template, open('{}.yaml'.format(patch), 'w'))
+
