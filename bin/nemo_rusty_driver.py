@@ -8,7 +8,7 @@ import yaml
 strict = True
 
 nemo_config_file = config.package_data_path('configs/nemo.yaml')
-template =  config.package_data_path('configs/nemo_template.yaml')
+template_file =  config.package_data_path('configs/nemo_template.yaml')
 nemo_config = config.read_yaml(nemo_config_file)
 
 # load data model
@@ -23,8 +23,10 @@ if type(patches) != list:
 else:
     pass
 
-for patch in patches:
-    season, patch, array, freq = patch.split('_')
+for psa in patches:
+    print("processing %s" %psa)    
+    template = config.read_yaml(template_file)
+    season, patch, array, freq = psa.split('_')
     arr_freq = '%s_%s' % (array, freq)
 
     beam_version = nemo_config['act_mr3']['beam_version']
@@ -83,26 +85,26 @@ for patch in patches:
         # do something here
         pass
 
-    mpi_switch = (ngrids[0]*ngrids[1] == 1)
-
+    mpi_switch = (ngrids[0]*ngrids[1] != 1)
+    mpi_switch = True if mpi_switch else False
     template['unfilteredMaps'][0]['mapFileName'] = map_file
     template['unfilteredMaps'][0]['weightsFileName'] = weight_file
     template['unfilteredMaps'][0]['beamFileName'] = beam_file
     template['unfilteredMaps'][0]['obsFreqGHz'] = 95.0 if freq == 'f090' else 148.0
     template['useMPI'] = mpi_switch
     template['thresholdSigma'] = nemo_config['nemo']['snr']
-    template['objIdent'] = 'mr3c_{}-'.format(patch)
+    template['objIdent'] = 'mr3c_{}-'.format(psa)
     template['catalogCuts'] = ['SNR > %0.1f'%nemo_config['nemo']['snr']]
     template['makeTileDeck']  = mpi_switch
 
     if not mpi_switch:
         del template['tileDefinitions']
         del template['tileNoiseRegions']
-        template['tileNoiseRegions'][0]['params']['noiseParams']['RADecSection'] = noise_tiles['0_0']
+        template['mapFilters'][0]['params']['noiseParams']['RADecSection'] = noise_tiles['0_0']
     else:
         template['tileDefinitions'] = tiles
         template['tileNoiseRegions'] = noise_tiles
-        template['tileNoiseRegions'][0]['params']['noiseParams']['RADecSection'] = 'tileNoiseRegions'
+        template['mapFilters'][0]['params']['noiseParams']['RADecSection'] = 'tileNoiseRegions'
 
-    yaml.dump(template, open('{}.yaml'.format(patch), 'w'))
+    yaml.dump(template, open('{}.yml'.format(psa), 'w'))
 
