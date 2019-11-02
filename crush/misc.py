@@ -1,21 +1,25 @@
-from collections import namedtuple
-from operator import mul
-from functools import reduce
-import numpy as np
 import os
+from collections import namedtuple
+from functools import reduce
+from operator import mul
+
+import numpy as np
+
 
 ##
 # some io stuff
 
 def create_dir(path2dir, safe=True):
-    if safe: assert(not os.path.exists(path2dir))
+    if safe: assert (not os.path.exists(path2dir))
     os.mkdir(path2dir)
     return 0
+
 
 ##
 # Find the largest bound area. Based on the solution on https://stackoverflow.com/questions/2478447
 
 RectangleGeo = namedtuple('RectangleGeo', 'start height')
+
 
 def max_size(mat, value=1, verbose=False):
     """Find height, width, and idxes of the largest rectangle constraining all
@@ -23,16 +27,17 @@ def max_size(mat, value=1, verbose=False):
     """
     it = iter(mat)
     hist = [(el == value) for el in next(it, [])]
+
     def _box_idxes(yidxes, xidxes):
         return yidxes + xidxes
 
     max_size, xidxes = max_rectangle_size(hist)
     max_idxes = _box_idxes((0, 0), xidxes)
     nrow = mat.shape[0]
-    nstep = int(nrow/50)
+    nstep = int(nrow / 50)
     for i, row in enumerate(it, start=1):
-        if verbose and i%nstep == 0:
-            print("[%d/%d] processed"%(i, nrow)) 
+        if verbose and i % nstep == 0:
+            print("[%d/%d] processed" % (i, nrow))
         hist = [(1 + h) if el == value else 0 for h, el in zip(hist, row)]
         cur_size, xidxes = max_rectangle_size(hist)
         cur_size = max(max_size, cur_size, key=area)
@@ -60,7 +65,7 @@ def max_rectangle_size(histogram):
 
     for pos, height in enumerate(histogram):
         start = pos  # position where rectangle starts
-        
+
         while True:
             if not stack or height > top().height:
                 stack.append(RectangleGeo(start, height))  # push

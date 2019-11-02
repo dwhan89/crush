@@ -1,11 +1,12 @@
 import numpy as np
-from astropy.io import ascii
 import numpy as np
-from pixell import utils
 from astropy import units as u
+from astropy.io import ascii
+from pixell import utils
+
 
 def apply_cut(cat, col, constrain, inplace=False):
-    exc = "cat['%s']%s"%(col, constrain)
+    exc = "cat['%s']%s" % (col, constrain)
     ret = cat.copy() if not inplace else cat
     try:
         loc = np.where(eval(exc))
@@ -13,6 +14,7 @@ def apply_cut(cat, col, constrain, inplace=False):
     except:
         print("can't execute", exc)
     return ret
+
 
 def read_nemo(fname, dtype='astropy'):
     ## took it from pixell.pointsrcs and modified to be compatible with the output from the latest version of nemo (Oct 14th, 2019)
@@ -25,7 +27,7 @@ def read_nemo(fname, dtype='astropy'):
 
     ret = ascii.read(fname)
     ret.rename_columns(['RADeg', 'decDeg', 'deltaT_c', 'err_deltaT_c', 'SNR', 'fluxJy', 'err_fluxJy'],
-            ['ra', 'dec', 'I', 'dI', 'snr', 'jy', 'sigma_jy'] )
+                       ['ra', 'dec', 'I', 'dI', 'snr', 'jy', 'sigma_jy'])
     ret['ra'] *= utils.degree
     ret['dec'] *= utils.degree
 
@@ -38,5 +40,5 @@ def read_nemo(fname, dtype='astropy'):
         ret['dec'] *= u.rad
         ret['jy'] *= u.Jy
         ret['sigma_jy'] *= u.Jy
-    
+
     return ret

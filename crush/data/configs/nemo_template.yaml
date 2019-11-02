@@ -6,14 +6,14 @@
 # NOTE: surveyMask is optional
 
 unfilteredMaps:
-    - {mapFileName: 'mapfile',
-       weightsFileName: 'weightfile',
-       obsFreqGHz: 'freq' , 'units': 'uK',
-       beamFileName: 'beamfile',
-       addNoise: null,
-       RADecSection: null,
-       pointSourceMask: null,
-       surveyMask: null}
+  - {mapFileName: 'mapfile',
+     weightsFileName: 'weightfile',
+     obsFreqGHz: 'freq' , 'units': 'uK',
+     beamFileName: 'beamfile',
+     addNoise: null,
+     RADecSection: null,
+     pointSourceMask: null,
+     surveyMask: null}
 
 # MPI? Used only for tileDeck files (see examples/AdvACT)
 useMPI: 'mpiswitch'
@@ -47,15 +47,15 @@ tileNoiseRegions: null
 
 # Filter definitions
 mapFilters:
-    - {label: "Beam",
-       class: "BeamRealSpaceMatchedFilter",
-       params: {noiseParams: {method: "max(dataMap,CMB)",
-                              matchedFilterClass: 'BeamMatchedFilter',
-                              RADecSection: 'noise_tiles_setting',
-                              kernelMaxArcmin: 7.,
-                              symmetrize: False,
-                              noiseGridArcmin: 20.},
-                              #saveHighPassMap: False,
-                              #saveRMSMap: False},
-                bckSub: True,
-                outputUnits: 'uK'}}
+  - {label: "Beam",
+     class: "BeamRealSpaceMatchedFilter",
+     params: {noiseParams: {method: "max(dataMap,CMB)",
+                            matchedFilterClass: 'BeamMatchedFilter',
+                            RADecSection: 'noise_tiles_setting',
+                            kernelMaxArcmin: 7.,
+                            symmetrize: False,
+                            noiseGridArcmin: 20.},
+       #saveHighPassMap: False,
+       #saveRMSMap: False},
+              bckSub: True,
+              outputUnits: 'uK'}}

@@ -8,6 +8,7 @@ this modulus so that we can plug in any alternative source finder libraries.
 '''
 
 import yaml
+
 try:
     import nemo
 except ImportError:
@@ -19,6 +20,7 @@ class SourceFinder(object):
     define the top level api for any SourceFinder class and subclass. any specific implementation of sourcefinder
     classes should inherit from this class.
     """
+
     def __init__(self):
         pass
 
@@ -27,9 +29,7 @@ class Nemo(SourceFinder):
     """
     this class handles top interactions with nemo library (https://github.com/simonsobs/nemo)
     """
+
     def __init__(self):
         super().__init__()
         pass
-
-
-

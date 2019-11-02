@@ -1,5 +1,6 @@
 import os
 import warnings
+
 import yaml
 
 _root = os.path.abspath(os.path.dirname(__file__))
@@ -15,6 +16,7 @@ def package_data_path(fname, strict=False):
     else:
         pass
     return file_path
+
 
 def read_yaml(yaml_file):
     with open(yaml_file, 'r') as stream:

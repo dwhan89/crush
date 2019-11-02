@@ -3,14 +3,17 @@
 
 """The setup script."""
 
-import setuptools
-from distutils.errors import DistutilsError
-from numpy.distutils.core import setup, Extension, build_ext, build_src
-from distutils.sysconfig import get_config_var, get_config_vars
-import versioneer
-import os, sys
+import os
 import subprocess as sp
+import sys
+from distutils.errors import DistutilsError
+from distutils.sysconfig import get_config_var, get_config_vars
+
 import numpy as np
+import setuptools
+import versioneer
+from numpy.distutils.core import setup, Extension, build_ext, build_src
+
 build_ext = build_ext.build_ext
 build_src = build_src.build_src
 
@@ -30,15 +33,15 @@ setup(
     description="crush",
     package_dir={"crush": "crush"},
     install_requires=["astropy >= 3.2",
-                    "numpy >= 1.10",
-                    "matplotlib >= 2.0",
-                    "astLib >= 0.10",
-                    "pixell >= 0.5",
-                    "scipy",
-                    "PyYAML",
-                    "mpi4py",
-                    "pandas",
-                    "soapack"],
+                      "numpy >= 1.10",
+                      "matplotlib >= 2.0",
+                      "astLib >= 0.10",
+                      "pixell >= 0.5",
+                      "scipy",
+                      "PyYAML",
+                      "mpi4py",
+                      "pandas",
+                      "soapack"],
     license="BSD license",
     keywords='crush',
     name='crush',
@@ -49,4 +52,3 @@ setup(
 )
 
 print('\n[setup.py request was successful.]')
-

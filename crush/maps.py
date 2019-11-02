@@ -1,9 +1,11 @@
-import numpy as np
-from pixell import enmap, utils
 # from soapack import interfaces as sint
 from itertools import product
-from crush import misc
+
+import numpy as np
 import scipy.ndimage
+from pixell import enmap, utils
+
+from crush import misc
 
 
 def catalog2pix(catalog, shape, wcs):
@@ -11,8 +13,10 @@ def catalog2pix(catalog, shape, wcs):
     pixs = enmap.sky2pix(shape, wcs, coords=coords)
     return pixs.astype(int)
 
+
 def nrect_grid(imap, grid_extent):
     return np.ceil(imap.extent() / grid_extent).astype(np.int)
+
 
 def rect_grid_pix(shape, ngrids):
     ny, my = divmod(shape[-2], ngrids[0])
@@ -113,22 +117,15 @@ def gridpix2sky(shape, wcs, grid_pixs):
     ret = np.zeros(grid_pixs.shape)
     for j in range(grid_pixs.shape[0]):
         for i in range(grid_pixs.shape[1]):
-            pix = grid_pixs[j,i]
+            pix = grid_pixs[j, i]
             ll_coords = enmap.pix2sky(shape, wcs, [pix[0], pix[2]])
             ur_coords = enmap.pix2sky(shape, wcs, [pix[1], pix[3]])
-            ret[j,i,:] = np.array([ll_coords[0], ur_coords[0], ll_coords[1], ur_coords[1]])
+            ret[j, i, :] = np.array([ll_coords[0], ur_coords[0], ll_coords[1], ur_coords[1]])
     return ret
+
 
 def reguarlize_rect_grid(grid, ndecimal=0):
     if grid.dtype == np.int:
         pass
     else:
         return np.round(grid, ndecimal)
-
-
-            
-
-
-
-
-
