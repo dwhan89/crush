@@ -8,6 +8,8 @@ from string import Template
 from subprocess import Popen, PIPE
 
 strict = True
+overwrite = False
+submit_jobs = True
 
 nemo_config_file = config.package_data_path('configs/nemo.yaml')
 template_file =  config.package_data_path('configs/nemo_template.yaml')
@@ -27,7 +29,9 @@ else:
 for psa in patches:
     print("processing %s" %psa)    
     template = config.read_yaml(template_file)
-    season, patch, array, freq = psa.split('_')
+
+    season, patch, array, freq = psa.split('_') 
+    if patch not in ['cmb']: continue
     arr_freq = '%s_%s' % (array, freq)
 
     beam_version = nemo_config['act_mr3']['beam_version']
@@ -96,7 +100,7 @@ for psa in patches:
     template['thresholdSigma'] = nemo_config['nemo']['snr']
     template['objIdent'] = 'mr3c_{}-'.format(psa)
     template['catalogCuts'] = ['SNR > %0.1f'%nemo_config['nemo']['snr']]
-    template['makeTileDeck']  = mpi_switch
+    template['makeTileDir']  = mpi_switch
 
     if not mpi_switch:
         del template['tileDefinitions']
@@ -109,22 +113,24 @@ for psa in patches:
 
     yaml.dump(template, open('{}.yml'.format(psa), 'w'))
 
+    if not submit_jobs: continue
     slurm_template_file = open(config.package_data_path('configs/rusty_slurm.txt'), 'r')
     slurm_template = Template(slurm_template_file.read())
     slurm_template_file.close()
     ngrid = int(ngrids[0]*ngrids[1])
 
     # improve this part
-    nodes = min(ngrid, 8)
-    ntasks = nodes
+    nodes = int(np.ceil(ngrid/40))
+    ntasks = ngrid
     slurm_settings = {}
     slurm_settings['nodes'] = nodes
     slurm_settings['ntasks'] = ntasks
-    slurm_settings['times']  = '05:00:00'
-    slurm_settings['cpuspertask'] = 20
+    slurm_settings['times']  = '24:00:00'
+    slurm_settings['cpuspertask'] = 1
     slurm_settings['jobname'] = psa
     slurm_settings['nemo_yml'] = '{}.yml'.format(psa)
     slurm_settings['nemo_flags'] = '-M' if mpi_switch else ''
+    slurm_settings['queue'] = 'gen' 
 
     script_content = slurm_template.safe_substitute(slurm_settings)
 

@@ -6,9 +6,13 @@ from crush import misc
 import scipy.ndimage
 
 
+def catalog2pix(catalog, shape, wcs):
+    coords = np.vstack([catalog['dec'], catalog['ra']])
+    pixs = enmap.sky2pix(shape, wcs, coords=coords)
+    return pixs.astype(int)
+
 def nrect_grid(imap, grid_extent):
     return np.ceil(imap.extent() / grid_extent).astype(np.int)
-
 
 def rect_grid_pix(shape, ngrids):
     ny, my = divmod(shape[-2], ngrids[0])

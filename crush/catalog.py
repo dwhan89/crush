@@ -1,15 +1,42 @@
 import numpy as np
 from astropy.io import ascii
+import numpy as np
+from pixell import utils
+from astropy import units as u
 
-def read_nemo(fname):
+def apply_cut(cat, col, constrain, inplace=False):
+    exc = "cat['%s']%s"%(col, constrain)
+    ret = cat.copy() if not inplace else cat
+    try:
+        loc = np.where(eval(exc))
+        ret = cat[loc]
+    except:
+        print("can't execute", exc)
+    return ret
+
+def read_nemo(fname, dtype='astropy'):
     ## took it from pixell.pointsrcs and modified to be compatible with the output from the latest version of nemo (Oct 14th, 2019)
-    """Reads the nemo ascii catalog format, and returns it as a recarray.
-
+    """Reads the nemo catalog 
     Args:
         fname:
     """
-    tbl = ascii.read(fname)
-    tbl.rename_columns(['RADeg', 'decDeg', 'deltaT_c', 'err_deltaT_c'], ['ra', 'dec', 'I', 'dI'] )
-    ocat = np.array(tbl.as_array(), dtype=tbl.dtype).view(np.recarray)
-    return ocat
+    if dtype not in ['astropy', 'pandas', 'numpy']:
+        print("can't recognize dtype={}. return the catalog as astropy table".format(dtype))
 
+    ret = ascii.read(fname)
+    ret.rename_columns(['RADeg', 'decDeg', 'deltaT_c', 'err_deltaT_c', 'SNR', 'fluxJy', 'err_fluxJy'],
+            ['ra', 'dec', 'I', 'dI', 'snr', 'jy', 'sigma_jy'] )
+    ret['ra'] *= utils.degree
+    ret['dec'] *= utils.degree
+
+    if dtype == 'pandas':
+        ret = ret.to_pandas()
+    elif dtype == 'numpy':
+        ret = np.array(ret.as_array(), dtype=ret.dtype).view(np.recarray)
+    else:
+        ret['ra'] *= u.rad
+        ret['dec'] *= u.rad
+        ret['jy'] *= u.Jy
+        ret['sigma_jy'] *= u.Jy
+    
+    return ret

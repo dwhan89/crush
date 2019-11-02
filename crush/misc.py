@@ -2,13 +2,20 @@ from collections import namedtuple
 from operator import mul
 from functools import reduce
 import numpy as np
+import os
+
+##
+# some io stuff
+
+def create_dir(path2dir, safe=True):
+    if safe: assert(not os.path.exists(path2dir))
+    os.mkdir(path2dir)
+    return 0
 
 ##
 # Find the largest bound area. Based on the solution on https://stackoverflow.com/questions/2478447
 
-
 RectangleGeo = namedtuple('RectangleGeo', 'start height')
-
 
 def max_size(mat, value=1, verbose=False):
     """Find height, width, and idxes of the largest rectangle constraining all

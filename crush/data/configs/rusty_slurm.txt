@@ -5,7 +5,7 @@
 #SBATCH --cpus-per-task=$cpuspertask
 #SBATCH --job-name $jobname
 #SBATCH --output=logs/$jobname
-#SBATCH -p cca
+#SBATCH -p $queue
 #SBATCH --constraint=skylake
 
 cd $SLURM_SUBMIT_DIR

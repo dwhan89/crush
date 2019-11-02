@@ -28,7 +28,7 @@ findCenterOfMass: True
 objIdent: 'fileprefix'
 longNames: False
 catalogCuts: ['snr']
-measureShapes: True
+measureShapes: False
 
 # tileDeck options - cut-up each map into smaller sections, store in a multi-extension .fits file
 makeTileDeck: 'tileswitch'
