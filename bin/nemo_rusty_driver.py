@@ -144,3 +144,4 @@ for psa in patches:
     process = Popen(command, stdout=PIPE)
     (output, err) = process.communicate()
     exit_code = process.wait()
+    os.remove('batch.txt')
