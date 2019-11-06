@@ -3,7 +3,7 @@ from itertools import product
 
 import numpy as np
 import scipy.ndimage
-from pixell import enmap, utils
+from pixell import enmap
 
 from crush import misc
 
@@ -63,7 +63,8 @@ def bounded_pix(imap, threadhold=None, threshold_factor=1., sigma=None, downsamp
         template = enmap.enmap(template, wcs=wcs)
     if downsample:
         # downsample maps to speed up the search process
-        if verbose: "downsampling by a factor of %d" % downsample
+        if verbose:
+            print("downsampling by a factor of %d" % downsample)
         template = enmap.downgrade(template, factor=downsample)
 
     loc = np.where(template != 0.)

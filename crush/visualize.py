@@ -18,7 +18,7 @@ def draw_ellipse_from_catalog(catalog, shape, wcs, transpose_method=PIL.Image.FL
     use_cm = 'use_cm' in kwargs and kwargs['use_cm']
     if use_cm:
         cm_range = kwargs['cm_range'] if 'cm_range' in kwargs else [catalog['jy'].min(), catalog['jy'].max()]
-        cm_style = kwargs['cm_style'] if 'cm_style' in kwargs else 'coolwarm'
+        cm_style = kwargs['cm_style'] if 'cm_style' in kwargs else 'coolwarm' 
         cmap = cm.get_cmap(cm_style)
         norm = matplotlib.colors.Normalize(vmin=np.log(cm_range[0]), vmax=np.log(cm_range[1]))
         smap = cm.ScalarMappable(norm=norm, cmap=cmap)

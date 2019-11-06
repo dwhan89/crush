@@ -11,7 +11,7 @@ def insert_to_dict(dictionary, elmt, indexes):
     key = indexes[0]
     if depth > 1:
         indexes = indexes[1:]
-        if key not in dictionary.keys(): 
+        if key not in dictionary.keys():
             dictionary[key] = {}
         insert_to_dict(dictionary[key], elmt, indexes)
     else:
@@ -22,7 +22,7 @@ def has_key(nested_dict, keys):
     ''' search through nested dictionary to fine the elements '''
     if not type(keys) is tuple: keys = (keys,)
     if not type(nested_dict) == dict: return False
-    if(len(keys) > 1):
+    if (len(keys) > 1):
         has_it = keys[0] in nested_dict
         return has_key(nested_dict[keys[0]], keys[1:]) if has_it else False
     else:
@@ -33,18 +33,19 @@ def get_from_dict(nested_dict, keys, safe=True):
     if not type(keys) is tuple: keys = (keys,)
     if safe and not has_key(nested_dict, keys): return None
 
-    if(len(keys) > 1):
+    if len(keys) > 1:
         return get_from_dict(nested_dict[keys[0]], keys[1:], False)
     else:
         return nested_dict[keys[0]]
 
 
-def NestedDictValues(dictionary):
+def nested_dict_values(dictionary):
     for v in dictionary.values():
         if isinstance(v, dict):
-            yield from NestedDictValues(v)
+            yield from nested_dict_values(v)
         else:
             yield v
+
 
 def progress(count, total, status=''):
     # adoped from https://gist.github.com/vladignatyev/06860ec2040cb497f0f3
@@ -55,14 +56,16 @@ def progress(count, total, status=''):
     bar = '=' * filled_len + '-' * (bar_len - filled_len)
     print('[%s] %s%s ...%s\r' % (bar, percents, '%', status))
 
+
 def join_char_array(arrays, seperator='_'):
-    sep_array = np.array([seperator]*len(arrays[0]))
+    sep_array = np.array([seperator] * len(arrays[0]))
 
     ret = arrays[0]
     for array in arrays[1:]:
-        ret = np.core.defchararray.add(ret,sep_array)
-        ret = np.core.defchararray.add(ret,array)
+        ret = np.core.defchararray.add(ret, sep_array)
+        ret = np.core.defchararray.add(ret, array)
     return ret
+
 
 ##
 # some io stuff
